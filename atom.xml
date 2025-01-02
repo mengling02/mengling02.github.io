@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2025-01-02T15:46:47.980Z</updated>
+  <updated>2025-01-02T15:48:33.117Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -21,15 +21,15 @@
     <link href="http://example.com/2025/01/02/My-New-Post/"/>
     <id>http://example.com/2025/01/02/My-New-Post/</id>
     <published>2025-01-02T13:45:59.000Z</published>
-    <updated>2025-01-02T15:46:47.980Z</updated>
+    <updated>2025-01-02T15:48:33.117Z</updated>
     
-    <content type="html"><![CDATA[<p>YOLOv8</p>]]></content>
+    <content type="html"><![CDATA[<p>YOLOv8</p><p>【【手把手带你实战YOLOv8-入门篇】YOLOv8 环境安装】 <a href="https://www.bilibili.com/video/BV13V4y1S7MK/?share_source=copy_web&vd_source=87f77576c1b7b4e86cc4ca7f7c4e5436">https://www.bilibili.com/video/BV13V4y1S7MK/?share_source=copy_web&amp;vd_source=87f77576c1b7b4e86cc4ca7f7c4e5436</a></p>]]></content>
     
     
       
       
     <summary type="html">&lt;p&gt;YOLOv8&lt;/p&gt;
-</summary>
+&lt;p&gt;【【手把手带你实战YOLOv8-入门篇】YOLOv8 环境安装】 &lt;a href=&quot;https://www.bilibili.com/video/BV13V4y1S7MK/?share_source=copy_web&amp;vd_source=87f7</summary>
       
     
     
