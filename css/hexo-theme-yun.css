@@ -295,6 +295,7 @@ body::before {
   animation-name: bgFadeIn;
   animation-duration: 2s;
   opacity: 1;
+  filter: blur(20px);
 }
 @-moz-keyframes bgFadeIn {
   from {
