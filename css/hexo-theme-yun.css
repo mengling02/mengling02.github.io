@@ -1943,8 +1943,8 @@ input {
 #site-overview-wrap {
   padding-top: 2rem;
 }
-.site-info.mickey-mouse {
-  margin-top: -2.8rem;
+.site-info.fix-top {
+  margin-top: -1.5rem;
 }
 .site-author-avatar {
   display: inline-block;
@@ -2103,6 +2103,25 @@ input {
 }
 #say #say-from {
   display: block;
+}
+.notice {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Songti SC', 'Noto Serif SC', STZhongsong, STKaiti, KaiTi, Roboto, serif;
+  font-weight: bold;
+  padding: 1rem;
+  margin: 1rem auto;
+  border: 1px solid #000;
+  max-width: calc(900px - 2rem);
+  background-color: rgba(255,255,255,0.3);
+}
+@media screen and (max-width: 768px) {
+  .notice {
+    border-left-width: 0px;
+    border-right-width: 0px;
+  }
 }
 iframe.bilibili-video {
   width: 100%;
