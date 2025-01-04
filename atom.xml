@@ -17,13 +17,13 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>关于构建基于hexo的githuhubhub_pages记录</title>
-    <link href="http://example.com/2025/01/04/%E5%85%B3%E4%BA%8E%E6%9E%84%E5%BB%BA%E5%9F%BA%E4%BA%8Ehexo%E7%9A%84githuhubhub-pages%E8%AE%B0%E5%BD%95/"/>
-    <id>http://example.com/2025/01/04/%E5%85%B3%E4%BA%8E%E6%9E%84%E5%BB%BA%E5%9F%BA%E4%BA%8Ehexo%E7%9A%84githuhubhub-pages%E8%AE%B0%E5%BD%95/</id>
+    <title>关于构建基于hexo的github_pages记录</title>
+    <link href="http://example.com/2025/01/04/%E5%85%B3%E4%BA%8E%E6%9E%84%E5%BB%BA%E5%9F%BA%E4%BA%8Ehexo%E7%9A%84github-pages%E8%AE%B0%E5%BD%95/"/>
+    <id>http://example.com/2025/01/04/%E5%85%B3%E4%BA%8E%E6%9E%84%E5%BB%BA%E5%9F%BA%E4%BA%8Ehexo%E7%9A%84github-pages%E8%AE%B0%E5%BD%95/</id>
     <published>2025-01-04T08:10:03.000Z</published>
     <updated>2025-01-04T08:10:03.000Z</updated>
     
-    <content type="html"><![CDATA[<span id="more"></span><hr><p>To Be Continued.</p><!-- Q.E.D. -->]]></content>
+    <content type="html"><![CDATA[<span id="more"></span><hr><p>123</p><!-- Q.E.D. -->]]></content>
     
     
       
@@ -31,13 +31,17 @@
     <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
 
 &lt;hr&gt;
-&lt;p&gt;To Be Continued.&lt;/p&gt;
+&lt;p&gt;123&lt;/p&gt;
 &lt;!-- Q.E.D. --&gt;
 </summary>
       
     
     
     
+    <category term="Hexo" scheme="http://example.com/categories/Hexo/"/>
+    
+    
+    <category term="Hexo" scheme="http://example.com/tags/Hexo/"/>
     
   </entry>
   
