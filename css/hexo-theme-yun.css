@@ -140,7 +140,7 @@ html.dark {
   --banner-char-color: #fff;
   --banner-char-bg-color: rgba(0,0,0,0.5);
   --banner-char-hover-color: #000;
-  --post-card-bg-color: rgba(27,31,46,0.9);
+  --post-card-bg-color: rgba(27,31,46,0.8);
   --post-card-shadow: 0 1px 8px rgba(27,31,46,0.1);
   --sidebar-bg-color: rgba(27,31,46,0.95);
   --sidebar-bg-image: url("https://cdn.yunyoujun.cn/img/bg/dark-alpha-stars-timing-1.webp");
@@ -1273,7 +1273,7 @@ input {
   }
 }
 :root {
-  --post-card-bg-color: rgba(255,255,255,0.9);
+  --post-card-bg-color: rgba(255,255,255,0.8);
   --post-card-shadow: 0 0 10px rgba(255,255,255,0.1);
 }
 .post-card {
