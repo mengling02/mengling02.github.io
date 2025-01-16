@@ -6,7 +6,7 @@
   <link href="https://mengling.site/atom.xml" rel="self"/>
   
   <link href="https://mengling.site/"/>
-  <updated>2025-01-09T02:57:29.000Z</updated>
+  <updated>2025-01-09T08:11:37.000Z</updated>
   <id>https://mengling.site/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Linux—-Mysql</title>
+    <link href="https://mengling.site/2025/01/09/Linux%E2%80%94-Mysql/"/>
+    <id>https://mengling.site/2025/01/09/Linux%E2%80%94-Mysql/</id>
+    <published>2025-01-09T08:11:37.000Z</published>
+    <updated>2025-01-09T08:11:37.000Z</updated>
+    
+    <content type="html"><![CDATA[<span id="more"></span><hr><h2 id="自建yum源"><a href="#自建yum源" class="headerlink" title="自建yum源"></a>自建yum源</h2><h2 id="SQl语言"><a href="#SQl语言" class="headerlink" title="SQl语言"></a>SQl语言</h2><h3 id="DDL（数据库定义语言）"><a href="#DDL（数据库定义语言）" class="headerlink" title="DDL（数据库定义语言）"></a>DDL（数据库定义语言）</h3><p>创建<code>CREATE、DROP、ALTER</code></p><h3 id="DML（数据库操纵语言）"><a href="#DML（数据库操纵语言）" class="headerlink" title="DML（数据库操纵语言）"></a>DML（数据库操纵语言）</h3><p>插入、删除、更新<code>INSERT、DELETE、UPDATE</code></p><h3 id="DQL（数据库查询语言）"><a href="#DQL（数据库查询语言）" class="headerlink" title="DQL（数据库查询语言）"></a>DQL（数据库查询语言）</h3><p>查询数据<code>SELECT</code></p><h3 id="DCL（数据库控制语言）"><a href="#DCL（数据库控制语言）" class="headerlink" title="DCL（数据库控制语言）"></a>DCL（数据库控制语言）</h3><p>控制用户访问权限<code>GRANT、REVOKE</code></p><h2 id="内部名词"><a href="#内部名词" class="headerlink" title="内部名词"></a>内部名词</h2><p><img src="https://cdn.jsdelivr.net/gh/mengling02/Picgo@main/images/image-20250109165116780.png" alt="image-20250109165116780" loading="lazy"></p><h2 id="DDL"><a href="#DDL" class="headerlink" title="DDL"></a>DDL</h2><h3 id="创建数据库"><a href="#创建数据库" class="headerlink" title="创建数据库"></a>创建数据库</h3><p><code>CREATE DATABASE 数据库名;</code># 库名区分大小写，但是是有病的行为</p><p><code>修改密码： mysqladmin -uroot -p&#39;老密码;&#39; password &#39;新密码&#39; </code></p><p><code>登录数据库： mysql -uroot -p&#39;密码&#39;</code></p><h3 id="查看所有数据库"><a href="#查看所有数据库" class="headerlink" title="查看所有数据库"></a>查看所有数据库</h3><p><code>SHOW DATABASES;</code></p><h3 id="选择并进入库"><a href="#选择并进入库" class="headerlink" title="选择并进入库"></a>选择并进入库</h3><p><code>SELECT database() ;</code> #调用函数，查询当前库</p><h3 id="删除库"><a href="#删除库" class="headerlink" title="删除库"></a>删除库</h3><p><code>DROP DATABASE</code></p><h3 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h3><p><code>CREATE TABLES 表名</code></p><h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><ul><li>数值型—-<code>int 、float </code></li><li>字符串型—-<code>char、varchar、enum、set</code></li><li>时间和日期型—-<code>year、date、time、datetime</code></li></ul><h4 id="实例一"><a href="#实例一" class="headerlink" title="实例一"></a>实例一</h4><ol><li>创库：<code>create database haha;</code> <code>use haha; </code># 创建haha库，并使用haha库</li><li>创表：<code>create table t1 (id int 约束);</code># 库中创建t1表（只有一列，id，数据为整型，无约束）</li><li>查看表 <code>show tables;</code> </li><li>插入：<code>inster into t1 values (1);</code> # 在t1表中插入 1 </li><li>查询表：<code>select * from t1;</code> </li><li>删除表：<code>drop table t1;</code></li></ol><h3 id="实例二"><a href="#实例二" class="headerlink" title="实例二"></a>实例二</h3><ol><li><code>use haha;</code></li><li><code>create table t2 (id int , name varchar());</code></li><li><code>desc t2</code> # 描述 t2 表的框架</li><li><code>insert into t2 values (1,&quot;zhangsan&quot;);</code></li></ol><h4 id="实例三"><a href="#实例三" class="headerlink" title="实例三"></a>实例三</h4><ol start="2"><li><code>create table t2 (id int , name varchar(20),sex enum(&quot;nan&quot;,&quot;nv&quot;),age int);</code></li></ol><h2 id=""><a href="#" class="headerlink" title=""></a></h2><h2 id="DML"><a href="#DML" class="headerlink" title="DML"></a>DML</h2><h3 id="插入操作"><a href="#插入操作" class="headerlink" title="插入操作"></a>插入操作</h3><ul><li>完整插入 — 值挨个对应</li><li>部分插入 — <code>insert into 表名(列名，列名) values(值1，值2);</code></li></ul><h3 id="更新操作"><a href="#更新操作" class="headerlink" title="更新操作"></a>更新操作</h3><ul><li><code>update 表名 set 列名=值 where 条件;</code></li><li><code>update t6 set name=&#39;cc&#39; where id=2</code></li><li><code>update mysql.user set authentication_string=password(&quot;mengzhichao@123456&quot;)where user=&quot;root&quot;;</code><ul><li>更新MySQL数据库管理员root账户密码（密码在mysql库中）</li></ul></li></ul><!-- Q.E.D. -->]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&quot;自建yum源&quot;&gt;&lt;a href=&quot;#自建yum源&quot; class=&quot;headerlink&quot; title=&quot;自建yum源&quot;&gt;&lt;/a&gt;自建yum源&lt;/h2&gt;&lt;h2 id=&quot;SQl语言&quot;&gt;&lt;a href=&quot;#SQ</summary>
+      
+    
+    
+    
+    <category term="Linux" scheme="https://mengling.site/categories/Linux/"/>
+    
+    
+    <category term="Mysql" scheme="https://mengling.site/tags/Mysql/"/>
+    
+  </entry>
   
   <entry>
     <title>Linux_指令</title>
