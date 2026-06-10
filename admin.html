@@ -700,7 +700,7 @@ async function githubEditPost(slug) {
   try {
     const config = getGithubConfig();
     if (!config) throw new Error('请先配置 GitHub 连接');
-    const filePath = 'posts/' + slug + '.md';
+    const filePath = '2025/' + slug + '.md';
     const data = await githubFetch('/repos/' + config.owner + '/' + config.repo + '/contents/' + filePath);
     const content = decodeURIComponent(escape(atob(data.content)));
     const match = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
