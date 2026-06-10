@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -209,6 +209,10 @@ input[type="file"] { display: none; }
   .post-item .post-actions { align-self: flex-end; }
 }
 </style>
+<select id="mode-select" onchange="setMode(this.value)" style="padding:0.2rem 0.4rem;font-size:0.8rem;width:auto;margin:0;border-radius:4px;border:1px solid #e0e0e0">
+  <option value="local">🔧 本地</option>
+  <option value="github">☁️ GitHub</option>
+</select>
 </head>
 <body>
 
@@ -221,7 +225,7 @@ input[type="file"] { display: none; }
   </h1>
   <div style="display:flex;gap:1rem;align-items:center">
     <a href="/admin.html" title="刷新">⟳ 刷新</a>
-    <select id="mode-select" onchange="setAdminMode(this.value)" style="padding:0.2rem 0.4rem;font-size:0.8rem;width:auto;margin:0;border-radius:4px;border:1px solid #e0e0e0"><option value="local">🔧 本地</option><option value="github">☁️ GitHub</option></select><span style="margin:0 0.5rem">|</span><a href="/" target="_blank">← 返回博客</a>
+    <a href="/" target="_blank">← 返回博客</a>
   </div>
 </div>
 
@@ -288,54 +292,22 @@ input[type="file"] { display: none; }
   </div>
 </div>
 
-
-// ======== Mode Toggle: Local API or Direct GitHub API ========
-const ADMIN_MODE_KEY = "blog_admin_mode";
-function getAdminMode() { return localStorage.getItem(ADMIN_MODE_KEY) || "local"; }
-function setAdminMode(mode) { localStorage.setItem(ADMIN_MODE_KEY, mode); location.reload(); }
-
-const GITHUB_CONFIG_KEY = "blog_github_config";
-function getGitHubConfig() {
-  try { return JSON.parse(localStorage.getItem(GITHUB_CONFIG_KEY)) || null; }
-  catch(e) { return null; }
-}
-function saveGitHubConfig(config) { localStorage.setItem(GITHUB_CONFIG_KEY, JSON.stringify(config)); }
-
-async function githubFetch(url, options) {
-  const config = getGitHubConfig();
-  if (!config) throw new Error("请先配置 GitHub 连接");
-  const res = await fetch("https://api.github.com" + url, {
-    ...options,
-    headers: {
-      "Authorization": "Bearer " + config.token,
-      "Content-Type": "application/json",
-      "User-Agent": "blog-admin",
-      ...((options && options.headers) || {})
-    }
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(function(){ return { message: res.statusText }; });
-    throw new Error(err.message || "请求失败");
-  }
-  return res.json();
-}
-
 <script>
 
 // ======== Mode Toggle: Local API or Direct GitHub API ========
-const ADMIN_MODE_KEY = "blog_admin_mode";
-function getAdminMode() { return localStorage.getItem(ADMIN_MODE_KEY) || "local"; }
-function setAdminMode(mode) { localStorage.setItem(ADMIN_MODE_KEY, mode); location.reload(); }
+const MODE_KEY = "blog_admin_mode";
+function getMode() { return localStorage.getItem(MODE_KEY) || "local"; }
+function setMode(mode) { localStorage.setItem(MODE_KEY, mode); location.reload(); }
 
-const GITHUB_CONFIG_KEY = "blog_github_config";
-function getGitHubConfig() {
-  try { return JSON.parse(localStorage.getItem(GITHUB_CONFIG_KEY)) || null; }
+const CONFIG_KEY = "blog_github_config";
+function getGithubConfig() {
+  try { return JSON.parse(localStorage.getItem(CONFIG_KEY)) || null; }
   catch(e) { return null; }
 }
-function saveGitHubConfig(config) { localStorage.setItem(GITHUB_CONFIG_KEY, JSON.stringify(config)); }
+function saveGithubConfig(config) { localStorage.setItem(CONFIG_KEY, JSON.stringify(config)); }
 
 async function githubFetch(url, options) {
-  const config = getGitHubConfig();
+  const config = getGithubConfig();
   if (!config) throw new Error("请先配置 GitHub 连接");
   const res = await fetch("https://api.github.com" + url, {
     ...options,
@@ -352,7 +324,6 @@ async function githubFetch(url, options) {
   }
   return res.json();
 }
-
 
 // ======== Tag Management ========
 let currentTags = new Set();
@@ -643,7 +614,21 @@ async function loadPosts() {
 }
 
 // ======== Init ========
-document.addEventListener('DOMContentLoaded', function() { var mode = getAdminMode(); var sel = document.getElementById('mode-select'); if (sel) sel.value = mode; if (mode === 'github') { var config = getGitHubConfig(); if (config) { loadPosts(); } else { document.getElementById('config-modal').style.display = 'flex'; } } else { loadPosts(); } });
+document.addEventListener('DOMContentLoaded', function() { 
+  const mode = getMode(); 
+  const sel = document.getElementById('mode-select'); 
+  if (sel) sel.value = mode; 
+  if (mode === 'github') { 
+    const config = getGithubConfig(); 
+    if (config) { 
+      loadPosts(); 
+    } else { 
+      document.getElementById('config-modal').style.display = 'flex'; 
+    } 
+  } else { 
+    loadPosts(); 
+  } 
+});
 
 // Load marked library as fallback
 var script = document.createElement('script');
@@ -653,226 +638,12 @@ script.onload = function() {
 };
 document.head.appendChild(script);
 
-function saveGHConfig() {
-  const token = document.getElementById('gh-token').value.trim();
-  const owner = document.getElementById('gh-owner').value.trim();
-  const repo = document.getElementById('gh-repo').value.trim();
-  if (!token || !owner || !repo) { showAlert('请填写所有配置项', 'error'); return; }
-  saveGitHubConfig({ token, owner, repo });
-  document.getElementById('config-modal').style.display = 'none';
-  showAlert('✅ 配置已保存', 'success');
-  loadPosts();
-}
-
 // Mode-aware API wrappers
-async function apiGetPosts() {
-  if (getAdminMode() === 'github') {
-    const config = getGitHubConfig();
-    if (!config) { showAlert('请先配置 GitHub 连接', 'error'); return []; }
-    const files = await githubFetch('/repos/' + config.owner + '/' + config.repo + '/contents/posts');
-    const mdFiles = files.filter(function(f) { return f.name.endsWith('.md'); });
-    return Promise.all(mdFiles.map(async function(f) {
-      const content = await fetch(f.download_url).then(function(r) { return r.text(); });
-      const match = content.match(/^---\n([\s\S]*?)\n---\n/);
-      var meta = {};
-      if (match) {
-        var fm = match[1];
-        var tMatch = fm.match(/title:\s*"([^"]+)"/);
-        if (tMatch) meta.title = tMatch[1];
-        var tagsMatch = fm.match(/tags:\s*\[([^\]]*)\]/);
-        if (tagsMatch) meta.tags = tagsMatch[1].split(',').map(function(t) { return t.trim().replace(/^"|"$/g, ''); }).filter(Boolean);
-        var dMatch = fm.match(/date:\s*(.+)/);
-        if (dMatch) meta.date = dMatch[1].trim();
-      }
-      return {
-        slug: f.name.replace('.md', ''),
-        title: meta.title || f.name.replace('.md', ''),
-        tags: meta.tags || [],
-        date: meta.date || ''
-      };
-    }));
-  }
-  const res = await fetch('/api/posts');
-  if (!res.ok) return [];
-  return res.json();
-}
-
-async function apiCreatePost(title, slug, tags, content) {
-  if (getAdminMode() === 'github') {
-    const config = getGitHubConfig();
-    if (!config) { showAlert('请先配置 GitHub 连接', 'error'); return; }
-    const dateStr = new Date().toISOString().split('T')[0];
-    const tagStr = '[' + tags.map(function(t) { return '"' + t + '"'; }).join(', ') + ']';
-    const frontMatter = '---\ntitle: "' + title + '"\ndate: ' + dateStr + '\ntags: ' + tagStr + '\n---\n\n';
-    const fileContent = frontMatter + content;
-    const encoded = btoa(unescape(encodeURIComponent(fileContent)));
-    const filePath = 'posts/' + slug + '.md';
-    await githubFetch('/repos/' + config.owner + '/' + config.repo + '/contents/' + filePath, {
-      method: 'PUT',
-      body: JSON.stringify({ message: 'feat: 发布文章 "' + title + '"', content: encoded, branch: 'main' })
-    });
-    return { slug: slug, title: title, message: '文章已发布' };
-  }
-  const res = await fetch('/api/posts', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ title: title, slug: slug, tags: tags, content: content })
-  });
-  if (!res.ok) throw new Error('发布失败');
-  return res.json();
-}
-
-async function apiDeletePost(slug) {
-  if (getAdminMode() === 'github') {
-    const config = getGitHubConfig();
-    if (!config) { showAlert('请先配置 GitHub 连接', 'error'); return; }
-    const sha = await getSha('posts/' + slug + '.md');
-    if (!sha) { showAlert('文章不存在', 'error'); return; }
-    await githubFetch('/repos/' + config.owner + '/' + config.repo + '/contents/posts/' + slug + '.md', {
-      method: 'DELETE',
-      body: JSON.stringify({ message: 'feat: 删除文章 "' + slug + '"', sha: sha, branch: 'main' })
-    });
-    return { slug: slug, message: '文章已删除' };
-  }
-  const res = await fetch('/api/posts/' + slug, { method: 'DELETE' });
-  if (!res.ok) throw new Error('删除失败');
-  return res.json();
-}
-
-async function apiGetPost(slug) {
-  if (getAdminMode() === 'github') {
-    const config = getGitHubConfig();
-    if (!config) throw new Error('请先配置 GitHub 连接');
-    const filePath = 'posts/' + slug + '.md';
-    const data = await githubFetch('/repos/' + config.owner + '/' + config.repo + '/contents/' + filePath);
-    const content = decodeURIComponent(escape(atob(data.content)));
-    const match = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
-    var meta = {};
-    var body = content;
-    if (match) {
-      var fm = match[1];
-      body = match[2];
-      var tMatch = fm.match(/title:\s*"([^"]+)"/);
-      if (tMatch) meta.title = tMatch[1];
-      var tagsMatch = fm.match(/tags:\s*\[([^\]]*)\]/);
-      if (tagsMatch) meta.tags = tagsMatch[1].split(',').map(function(t) { return t.trim().replace(/^"|"$/g, ''); }).filter(Boolean);
-    }
-    return { slug: slug, title: meta.title || slug, tags: meta.tags || [], body: body };
-  }
-  const res = await fetch('/api/posts/' + slug);
-  if (!res.ok) throw new Error('无法加载文章');
-  return res.json();
-}
 
 // Override fetch-based functions to use mode-aware APIs
-var _origPublish = publishPost;
-publishPost = async function() {
-  const title = document.getElementById('title-input').value.trim();
-  const content = document.getElementById('content-input').value.trim();
-  let slug = document.getElementById('slug-input').value.trim();
-  if (!title) { showAlert('请输入文章标题', 'error'); return; }
-  if (!content) { showAlert('请输入文章内容', 'error'); return; }
-  if (!slug) {
-    slug = title.toLowerCase().replace(/[^\w\s\u4e00-\u9fff-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').trim() || 'post-' + Date.now();
-  }
-  const btn = document.getElementById('publish-btn');
-  btn.disabled = true;
-  btn.textContent = '⏳ 发布中...';
-  try {
-    const data = await apiCreatePost(title, slug, Array.from(currentTags), content);
-    showAlert('✅ ' + data.message + ': ' + title, 'success');
-    document.getElementById('slug-input').value = data.slug;
-    document.getElementById('editing-hint').style.display = 'none';
-    document.getElementById('publish-btn').textContent = '📤 发布文章';
-    document.getElementById('cancel-edit-btn').style.display = 'none';
-    loadPosts();
-  } catch (err) {
-    showAlert('❌ 发布失败: ' + err.message, 'error');
-  } finally {
-    btn.disabled = false;
-    if (getAdminMode() === 'local') btn.textContent = '📤 发布文章';
-  }
-};
 
-var _origDelete = deletePost;
-deletePost = async function(slug) {
-  if (!confirm('确定要删除这篇文章吗？此操作不可恢复。')) return;
-  try {
-    const data = await apiDeletePost(slug);
-    showAlert('🗑️ ' + data.message, 'success');
-    loadPosts();
-  } catch (err) {
-    showAlert('❌ 删除失败: ' + err.message, 'error');
-  }
-};
-
-var _origEdit = editPost;
-editPost = async function(slug) {
-  try {
-    const post = await apiGetPost(slug);
-    document.getElementById('title-input').value = post.title || '';
-    document.getElementById('slug-input').value = post.slug || slug;
-    document.getElementById('content-input').value = post.body || '';
-    currentTags = new Set(post.tags || []);
-    renderTags();
-    document.getElementById('editing-hint').style.display = 'inline';
-    document.getElementById('editing-slug').textContent = slug;
-    document.getElementById('publish-btn').textContent = '💾 保存更新';
-    document.getElementById('cancel-edit-btn').style.display = 'inline';
-    switchTab(document.querySelectorAll('.tab')[0], 'editor');
-    showAlert('✏️ 已加载文章: ' + post.title, 'info');
-  } catch (err) {
-    showAlert('❌ 加载失败: ' + err.message, 'error');
-  }
-};
-
-var _origLoad = loadPosts;
-loadPosts = async function() {
-  const list = document.getElementById('posts-list');
-  list.innerHTML = '<div class="empty-state">加载中...</div>';
-  try {
-    const posts = await apiGetPosts();
-    if (posts.length === 0) {
-      list.innerHTML = '<div class="empty-state">📭 还没有发布过文章</div>';
-      return;
-    }
-    list.innerHTML = '<ul class="post-list">' + posts.map(function(p) {
-      const tagsHtml = (p.tags || []).map(function(t) { return '<span class="post-tag">#' + t + '</span>'; }).join(' ');
-      return '<li class="post-item">' +
-        '<div class="post-info">' +
-          '<div class="post-title">' + (p.title || p.slug) + '</div>' +
-          '<div class="post-meta">' +
-            '<span>' + p.date + '</span>' +
-            (tagsHtml ? '<span>' + tagsHtml + '</span>' : '') +
-          '</div>' +
-        '</div>' +
-        '<div class="post-actions">' +
-          '<button class="btn btn-outline btn-sm" onclick="editPost('' + p.slug + '')">✏️</button>' +
-          '<button class="btn btn-danger btn-sm" onclick="deletePost('' + p.slug + '')">🗑️</button>' +
-        '</div>' +
-      '</li>';
-    }).join('') + '</ul>';
-  } catch (err) {
-    list.innerHTML = '<div class="alert alert-error">加载失败: ' + err.message + '</div>';
-  }
-};
 </script>
 
-<div id="config-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center">
-  <div style="background:#fff;border-radius:8px;padding:2rem;max-width:500px;width:90%">
-    <h2 style="margin-bottom:1rem">☁️ 配置 GitHub 连接</h2>
-    <p style="font-size:0.85rem;color:#666;margin-bottom:1rem">在 GitHub 模式下的管理操作会直接提交到你的仓库</p>
-    <label>GitHub Token（需 repo 权限）</label>
-    <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-    <label>仓库所有者</label>
-    <input type="text" id="gh-owner" placeholder="your-username">
-    <label>仓库名称</label>
-    <input type="text" id="gh-repo" placeholder="your-repo">
-    <div style="display:flex;gap:0.5rem;margin-top:1rem">
-      <button class="btn btn-primary" onclick="saveGHConfig()">保存</button>
-      <button class="btn btn-outline" onclick="setAdminMode('local')">切换到本地模式</button>
-    </div>
-  </div>
 </div>
 
 </body>
