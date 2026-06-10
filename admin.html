@@ -321,6 +321,39 @@ async function githubFetch(url, options) {
 }
 
 <script>
+
+// ======== Mode Toggle: Local API or Direct GitHub API ========
+const ADMIN_MODE_KEY = "blog_admin_mode";
+function getAdminMode() { return localStorage.getItem(ADMIN_MODE_KEY) || "local"; }
+function setAdminMode(mode) { localStorage.setItem(ADMIN_MODE_KEY, mode); location.reload(); }
+
+const GITHUB_CONFIG_KEY = "blog_github_config";
+function getGitHubConfig() {
+  try { return JSON.parse(localStorage.getItem(GITHUB_CONFIG_KEY)) || null; }
+  catch(e) { return null; }
+}
+function saveGitHubConfig(config) { localStorage.setItem(GITHUB_CONFIG_KEY, JSON.stringify(config)); }
+
+async function githubFetch(url, options) {
+  const config = getGitHubConfig();
+  if (!config) throw new Error("请先配置 GitHub 连接");
+  const res = await fetch("https://api.github.com" + url, {
+    ...options,
+    headers: {
+      "Authorization": "Bearer " + config.token,
+      "Content-Type": "application/json",
+      "User-Agent": "blog-admin",
+      ...((options && options.headers) || {})
+    }
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(function(){ return { message: res.statusText }; });
+    throw new Error(err.message || "请求失败");
+  }
+  return res.json();
+}
+
+
 // ======== Tag Management ========
 let currentTags = new Set();
 
@@ -610,7 +643,7 @@ async function loadPosts() {
 }
 
 // ======== Init ========
-document.addEventListener('DOMContentLoaded', function() { var mode = getAdminMode(); document.getElementById('mode-select').value = mode; if (mode === 'github') { var config = getGitHubConfig(); if (!config) { document.getElementById('config-modal').style.display = 'block'; } else { loadPosts(); } } else { loadPosts(); } });
+document.addEventListener('DOMContentLoaded', function() { var mode = getAdminMode(); var sel = document.getElementById('mode-select'); if (sel) sel.value = mode; if (mode === 'github') { var config = getGitHubConfig(); if (config) { loadPosts(); } else { document.getElementById('config-modal').style.display = 'flex'; } } else { loadPosts(); } });
 
 // Load marked library as fallback
 var script = document.createElement('script');
@@ -825,7 +858,7 @@ loadPosts = async function() {
 };
 </script>
 
-<div id="config-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:999;display:flex;align-items:center;justify-content:center">
+<div id="config-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center">
   <div style="background:#fff;border-radius:8px;padding:2rem;max-width:500px;width:90%">
     <h2 style="margin-bottom:1rem">☁️ 配置 GitHub 连接</h2>
     <p style="font-size:0.85rem;color:#666;margin-bottom:1rem">在 GitHub 模式下的管理操作会直接提交到你的仓库</p>
