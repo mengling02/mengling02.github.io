@@ -600,7 +600,7 @@ async function originalLoadPosts() {
   }
 }
 
-// ======== GitHub 模式覆盖函数 ========
+// ======== GitHub 模式覆盖函数（适配 Hexo 源码仓库 source/_posts） ========
 async function githubPublish() {
   const title = document.getElementById('title-input').value.trim();
   const content = document.getElementById('content-input').value.trim();
@@ -621,12 +621,12 @@ async function githubPublish() {
     const frontMatter = '---\ntitle: "' + title + '"\ndate: ' + dateStr + '\ntags: ' + tagStr + '\n---\n\n';
     const fileContent = frontMatter + content;
     const encoded = btoa(unescape(encodeURIComponent(fileContent)));
-    const filePath = 'posts/' + slug + '.md';
+    const filePath = 'source/_posts/' + slug + '.md';
     await githubFetch('/repos/' + config.owner + '/' + config.repo + '/contents/' + filePath, {
       method: 'PUT',
       body: JSON.stringify({ message: 'feat: 发布文章 "' + title + '"', content: encoded, branch: 'main' })
     });
-    showAlert('✅ 文章已发布到 GitHub: ' + title, 'success');
+    showAlert('✅ 文章已提交到源码仓库: ' + title, 'success');
     loadPosts();
   } catch (err) {
     showAlert('❌ 发布失败: ' + err.message, 'error');
@@ -644,10 +644,10 @@ async function githubLoadPosts() {
     if (!config) throw new Error('请先配置 GitHub 连接');
     let files;
     try {
-      files = await githubFetch('/repos/' + config.owner + '/' + config.repo + '/contents/posts');
+      files = await githubFetch('/repos/' + config.owner + '/' + config.repo + '/contents/source/_posts');
     } catch (e) {
       if (e.message.includes('404')) {
-        list.innerHTML = '<div class="empty-state">📭 还没有文章，请在仓库中创建 posts 目录</div>';
+        list.innerHTML = '<div class="empty-state">📭 还没有文章，请在仓库中创建 source/_posts 目录</div>';
         return;
       }
       throw e;
@@ -700,7 +700,7 @@ async function githubEditPost(slug) {
   try {
     const config = getGithubConfig();
     if (!config) throw new Error('请先配置 GitHub 连接');
-    const filePath = '2025/' + slug + '.md';
+    const filePath = 'source/_posts/' + slug + '.md';
     const data = await githubFetch('/repos/' + config.owner + '/' + config.repo + '/contents/' + filePath);
     const content = decodeURIComponent(escape(atob(data.content)));
     const match = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
@@ -734,7 +734,7 @@ async function githubDeletePost(slug) {
   try {
     const config = getGithubConfig();
     if (!config) throw new Error('请先配置 GitHub 连接');
-    const filePath = 'posts/' + slug + '.md';
+    const filePath = 'source/_posts/' + slug + '.md';
     const fileData = await githubFetch('/repos/' + config.owner + '/' + config.repo + '/contents/' + filePath);
     await githubFetch('/repos/' + config.owner + '/' + config.repo + '/contents/' + filePath, {
       method: 'DELETE',
@@ -837,13 +837,13 @@ document.head.appendChild(script);
 <div id="config-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:999; align-items:center; justify-content:center">
   <div style="background:#fff; border-radius:8px; padding:2rem; max-width:500px; width:90%">
     <h2 style="margin-bottom:1rem">☁️ 配置 GitHub 连接</h2>
-    <p style="font-size:0.85rem; color:#666; margin-bottom:1rem">在 GitHub 模式下，文章会直接提交到你的仓库。</p>
+    <p style="font-size:0.85rem; color:#666; margin-bottom:1rem">在 GitHub 模式下，文章会直接提交到你的 Hexo 源码仓库（source/_posts），并触发 GitHub Actions 自动部署。</p>
     <label>GitHub Token（需 repo 权限）</label>
     <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
     <label>仓库所有者</label>
     <input type="text" id="gh-owner" placeholder="your-username">
     <label>仓库名称</label>
-    <input type="text" id="gh-repo" placeholder="your-repo">
+    <input type="text" id="gh-repo" placeholder="your-blog-source">
     <div style="display:flex; gap:0.5rem; margin-top:1rem">
       <button class="btn btn-primary" onclick="saveGithubConfigFromModal()">保存</button>
       <button class="btn btn-outline" onclick="setMode('local')">切换到本地模式</button>
