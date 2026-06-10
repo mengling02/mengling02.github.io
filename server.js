@@ -1,10 +1,10 @@
-﻿const http = require('http');
+const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
 
 const baseDir = __dirname;
-const port = 3000;
+const port = 18080;
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -141,7 +141,7 @@ http.createServer(async (req, res) => {
       fs.unlinkSync(filePath);
       sendJson(res, 200, { message: '文章已删除', slug });
     } else {
-      sendJson(res, 404, { error: '文章不存在' });
+      sendJson(res, 404, { error: '���²�����' });
     }
     return;
   }
@@ -161,7 +161,7 @@ http.createServer(async (req, res) => {
         body
       });
     } else {
-      sendJson(res, 404, { error: '文章不存在' });
+      sendJson(res, 404, { error: '���²�����' });
     }
     return;
   }
