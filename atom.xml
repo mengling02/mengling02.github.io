@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2026-06-11T03:01:04.395Z</updated>
+  <updated>2025-01-04T16:10:03.000Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,29 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>孟志超</title>
-    <link href="http://example.com/2026/06/10/%E5%AD%9F%E5%BF%97%E8%B6%85/"/>
-    <id>http://example.com/2026/06/10/%E5%AD%9F%E5%BF%97%E8%B6%85/</id>
-    <published>2026-06-10T00:00:00.000Z</published>
-    <updated>2026-06-11T03:01:04.395Z</updated>
-    
-    <content type="html"><![CDATA[<p>mmm</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;mmm&lt;/p&gt;
-</summary>
-      
-    
-    
-    
-    
-    <category term="mzc" scheme="http://example.com/tags/mzc/"/>
-    
-  </entry>
   
   <entry>
     <title>关于构建基于hexo的githuhubhub_pages记录</title>
@@ -69,7 +46,7 @@
     <link href="http://example.com/2025/01/03/U-net%E7%9C%BC%E5%BA%95%E8%A1%80%E7%AE%A1%E5%88%86%E5%89%B2/"/>
     <id>http://example.com/2025/01/03/U-net%E7%9C%BC%E5%BA%95%E8%A1%80%E7%AE%A1%E5%88%86%E5%89%B2/</id>
     <published>2025-01-03T21:51:46.000Z</published>
-    <updated>2026-06-11T03:01:04.395Z</updated>
+    <updated>2026-06-11T03:01:09.036Z</updated>
     
     
     
@@ -82,7 +59,7 @@
     <link href="http://example.com/2025/01/02/YOLOv8/"/>
     <id>http://example.com/2025/01/02/YOLOv8/</id>
     <published>2025-01-02T21:45:59.000Z</published>
-    <updated>2026-06-11T03:01:04.395Z</updated>
+    <updated>2026-06-11T03:01:09.036Z</updated>
     
     <content type="html"><![CDATA[<h1 id="YOLOv8"><a href="#YOLOv8" class="headerlink" title="YOLOv8"></a>YOLOv8</h1><h2 id="环境安装"><a href="#环境安装" class="headerlink" title="环境安装"></a>环境安装</h2><ol><li><p>下载yolov8代码</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://gitclone.com/github.com/ultralytics/ultralytics.git </span><br></pre></td></tr></table></figure></li><li><p>进入ultralytics文件夹,安装yolov8</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install -e.</span><br></pre></td></tr></table></figure></li><li><p>安装conda软件，创建虚拟环境</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda create -n yolov8 python=3.8</span><br></pre></td></tr></table></figure></li><li><p>激活虚拟环境</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda activate yolov8</span><br></pre></td></tr></table></figure></li><li><p>（可选）更改pip的源，下载速度会更快</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip config set install.trusted-host mirrors.aliyun.com</span><br></pre></td></tr></table></figure></li><li><p>（可选）安装必要的包</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install ultralytics</span><br></pre></td></tr></table></figure></li><li><p>下载训练模型</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8s.pt</span><br><span class="line">https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8n.pt</span><br></pre></td></tr></table></figure></li><li><p>验证（使用GPU需安装相应驱动）</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">无显卡驱动</span><br><span class="line">yolo predict model=yolov8n.pt source=&#x27;ultralytics/assets/bus.jpg&#x27; device=cpu</span><br><span class="line"></span><br><span class="line">有显卡驱动(看扩展的部分，安装gpu版本torch才能运行)</span><br><span class="line">yolo predict model=yolov8n.pt source=&#x27;ultralytics/assets/bus.jpg&#x27; device=0</span><br><span class="line"></span><br></pre></td></tr></table></figure></li></ol><h2 id="ultralytics配置"><a href="#ultralytics配置" class="headerlink" title="ultralytics配置"></a>ultralytics配置</h2><ol><li><p>新建predict.py文件以及train.py文件，方便后续启动（省去敲命令行的步骤）</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> ultralytics <span class="keyword">import</span> YOLO</span><br><span class="line"></span><br><span class="line">yolo = YOLO(<span class="string">&quot;./yolov8n.pt&quot;</span>,task=<span class="string">&quot;detect&quot;</span>)</span><br><span class="line"></span><br><span class="line">result = yolo(source = <span class="string">&quot;./ultralytics/assets&quot;</span>,save=<span class="literal">True</span>,conf=<span class="number">0.25</span>)<span class="comment">#0:调用摄像头  screen：调用屏幕</span></span><br></pre></td></tr></table></figure><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> ultralytics <span class="keyword">import</span> YOLO</span><br><span class="line"></span><br><span class="line">model = YOLO(<span class="string">&#x27;yolov8n.pt&#x27;</span>)</span><br><span class="line"></span><br><span class="line">model.train(data=<span class="string">&#x27;yolo-data.yaml&#x27;</span>)</span><br><span class="line"><span class="comment">#workers：windows电脑设置为1</span></span><br><span class="line"><span class="comment">#epochs训练50轮</span></span><br><span class="line"><span class="comment">#yolo task=detect mode=train model=./yolov8n.pt data=&quot;yolo-data.yaml” workers=1 epochs=58 batch=16</span></span><br></pre></td></tr></table></figure></li><li><p>从 ultralytics-main&#x2F;ultralytics&#x2F;cfg 的目录中 copy一份 default.yam l文件，方便后续修改参数</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yolo copy-cfg</span><br></pre></td></tr></table></figure></li><li><p>新建yolo-data.yaml文件 </p><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"># Ultralytics YOLO 🚀<span class="punctuation">,</span> AGPL<span class="number">-3.0</span> license</span><br><span class="line"># African-wildlife dataset by Ultralytics</span><br><span class="line"># Documentation<span class="punctuation">:</span> https<span class="punctuation">:</span><span class="comment">//docs.ultralytics.com/datasets/detect/african-wildlife/</span></span><br><span class="line"># Example usage<span class="punctuation">:</span> yolo train data=african-wildlife.yaml</span><br><span class="line"># parent</span><br><span class="line"># ├── ultralytics</span><br><span class="line"># └── datasets</span><br><span class="line">#     └── african-wildlife  ← downloads here (<span class="number">100</span> MB)</span><br><span class="line"></span><br><span class="line"># Train/val/test sets as <span class="number">1</span>) dir<span class="punctuation">:</span> path/to/imgs<span class="punctuation">,</span> <span class="number">2</span>) file<span class="punctuation">:</span> path/to/imgs.txt<span class="punctuation">,</span> or <span class="number">3</span>) list<span class="punctuation">:</span> <span class="punctuation">[</span>path/to/imgs1<span class="punctuation">,</span> path/to/imgs2<span class="punctuation">,</span> ..<span class="punctuation">]</span></span><br><span class="line">path<span class="punctuation">:</span> data # dataset root dir，只能在datasets目录下</span><br><span class="line">train<span class="punctuation">:</span> ./images/train # train images (relative to &#x27;path&#x27;) <span class="number">1052</span> images</span><br><span class="line">val<span class="punctuation">:</span> ./images/val # val images (relative to &#x27;path&#x27;) <span class="number">225</span> images</span><br><span class="line">test<span class="punctuation">:</span>  # test images (relative to &#x27;path&#x27;) <span class="number">227</span> images</span><br><span class="line"></span><br><span class="line"># Classes</span><br><span class="line">names<span class="punctuation">:</span> #标签种类</span><br><span class="line">  <span class="number">0</span><span class="punctuation">:</span> train</span><br><span class="line">#  <span class="number">1</span><span class="punctuation">:</span> ****</span><br></pre></td></tr></table></figure></li><li><p>数据文件夹结构</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">datasets</span><br><span class="line">├── data</span><br><span class="line"> ├──images</span><br><span class="line"> └──val</span><br><span class="line">├── labels</span><br><span class="line"> ├──images</span><br><span class="line"> └──val</span><br><span class="line">├──classes.txt</span><br></pre></td></tr></table></figure></li></ol><p>参考文档<a href="https://docs.ultralytics.com/zh/models/yolov8/">YOLOv8 -Ultralytics YOLO 文档</a></p>]]></content>
     
@@ -104,7 +81,7 @@
     <link href="http://example.com/2025/01/01/hello-hexo/"/>
     <id>http://example.com/2025/01/01/hello-hexo/</id>
     <published>2025-01-01T21:45:59.000Z</published>
-    <updated>2026-06-11T03:01:04.395Z</updated>
+    <updated>2026-06-11T03:01:09.036Z</updated>
     
     <content type="html"><![CDATA[<p>Welcome to 南有乔木的小破站 ! This is your very first post. </p><p>本小破绽基于Hexo架构使用Hexo-theme-yun主题开发，文章编辑详情请见下方链接<a href="https://yun.yunyoujun.cn/guide/config.html#%E6%96%87%E7%AB%A0">主题配置 | Hexo-Theme-Yun (yunyoujun.cn)</a></p><p>南有乔木</p><p>性别：男</p><p>就读于齐鲁师范学院信息科学与工程学院，在读计算机科学与技术专业。</p><p>啦啦啦~~~</p>]]></content>
     
