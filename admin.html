@@ -626,7 +626,7 @@ async function githubPublish() {
     const filePath = GITHUB_POSTS_PATH + '/' + slug + '.md';
     await githubFetch('/repos/' + config.owner + '/' + config.repo + '/contents/' + filePath, {
       method: 'PUT',
-      body: JSON.stringify({ message: 'feat: 发布文章 "' + title + '"', content: encoded, branch: 'main' })
+      body: JSON.stringify({ message: 'feat: 发布文章 "' + title + '"', content: encoded, branch: 'master' })
     });
     showAlert('✅ 文章已发布到 GitHub: ' + title, 'success');
     loadPosts();
@@ -740,7 +740,7 @@ async function githubDeletePost(slug) {
     const fileData = await githubFetch('/repos/' + config.owner + '/' + config.repo + '/contents/' + filePath);
     await githubFetch('/repos/' + config.owner + '/' + config.repo + '/contents/' + filePath, {
       method: 'DELETE',
-      body: JSON.stringify({ message: 'feat: 删除文章 "' + slug + '"', sha: fileData.sha, branch: 'main' })
+      body: JSON.stringify({ message: 'feat: 删除文章 "' + slug + '"', sha: fileData.sha, branch: 'master' })
     });
     showAlert('🗑️ 已删除: ' + slug, 'success');
     loadPosts();
