@@ -601,6 +601,8 @@ async function originalLoadPosts() {
 }
 
 // ======== GitHub 模式覆盖函数 ========
+const GITHUB_POSTS_PATH = 'source/_posts';
+
 async function githubPublish() {
   const title = document.getElementById('title-input').value.trim();
   const content = document.getElementById('content-input').value.trim();
@@ -621,7 +623,7 @@ async function githubPublish() {
     const frontMatter = '---\ntitle: "' + title + '"\ndate: ' + dateStr + '\ntags: ' + tagStr + '\n---\n\n';
     const fileContent = frontMatter + content;
     const encoded = btoa(unescape(encodeURIComponent(fileContent)));
-    const filePath = 'posts/' + slug + '.md';
+    const filePath = GITHUB_POSTS_PATH + '/' + slug + '.md';
     await githubFetch('/repos/' + config.owner + '/' + config.repo + '/contents/' + filePath, {
       method: 'PUT',
       body: JSON.stringify({ message: 'feat: 发布文章 "' + title + '"', content: encoded, branch: 'main' })
@@ -644,10 +646,10 @@ async function githubLoadPosts() {
     if (!config) throw new Error('请先配置 GitHub 连接');
     let files;
     try {
-      files = await githubFetch('/repos/' + config.owner + '/' + config.repo + '/contents/posts');
+      files = await githubFetch('/repos/' + config.owner + '/' + config.repo + '/contents/' + GITHUB_POSTS_PATH);
     } catch (e) {
       if (e.message.includes('404')) {
-        list.innerHTML = '<div class="empty-state">📭 还没有文章，请在仓库中创建 posts 目录</div>';
+        list.innerHTML = '<div class="empty-state">📭 还没有文章，请在仓库中创建 ' + GITHUB_POSTS_PATH + ' 目录</div>';
         return;
       }
       throw e;
@@ -700,7 +702,7 @@ async function githubEditPost(slug) {
   try {
     const config = getGithubConfig();
     if (!config) throw new Error('请先配置 GitHub 连接');
-    const filePath = '2025/' + slug + '.md';
+    const filePath = GITHUB_POSTS_PATH + '/' + slug + '.md';
     const data = await githubFetch('/repos/' + config.owner + '/' + config.repo + '/contents/' + filePath);
     const content = decodeURIComponent(escape(atob(data.content)));
     const match = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
@@ -734,7 +736,7 @@ async function githubDeletePost(slug) {
   try {
     const config = getGithubConfig();
     if (!config) throw new Error('请先配置 GitHub 连接');
-    const filePath = 'posts/' + slug + '.md';
+    const filePath = GITHUB_POSTS_PATH + '/' + slug + '.md';
     const fileData = await githubFetch('/repos/' + config.owner + '/' + config.repo + '/contents/' + filePath);
     await githubFetch('/repos/' + config.owner + '/' + config.repo + '/contents/' + filePath, {
       method: 'DELETE',
