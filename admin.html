@@ -469,6 +469,8 @@ function clearEditor() {
   document.getElementById('editing-hint').style.display = 'none';
   document.getElementById('publish-btn').textContent = '📤 发布文章';
   document.getElementById('cancel-edit-btn').style.display = 'none';
+
+  currentEditingSha = null;
 }
 
 function cancelEdit() {
@@ -603,38 +605,147 @@ async function originalLoadPosts() {
 // ======== GitHub 模式覆盖函数 ========
 const GITHUB_POSTS_PATH = 'source/_posts';
 
+let currentEditingSha = null;
+
 async function githubPublish() {
   const title = document.getElementById('title-input').value.trim();
   const content = document.getElementById('content-input').value.trim();
   let slug = document.getElementById('slug-input').value.trim();
-  if (!title) { showAlert('请输入文章标题', 'error'); return; }
-  if (!content) { showAlert('请输入文章内容', 'error'); return; }
-  if (!slug) {
-    slug = title.toLowerCase().replace(/[^\w\s\u4e00-\u9fff-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').trim() || 'post-' + Date.now();
+
+  if (!title) {
+    showAlert('请输入文章标题', 'error');
+    return;
   }
+
+  if (!content) {
+    showAlert('请输入文章内容', 'error');
+    return;
+  }
+
+  if (!slug) {
+    slug = title.toLowerCase()
+      .replace(/[^\w\s\u4e00-\u9fff-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '')
+      .trim() || ('post-' + Date.now());
+  }
+
   const btn = document.getElementById('publish-btn');
+
   btn.disabled = true;
   btn.textContent = '⏳ 发布中...';
+
   try {
+
     const config = getGithubConfig();
-    if (!config) throw new Error('请先配置 GitHub 连接');
-    const dateStr = new Date().toISOString().split('T')[0];
-    const tagStr = '[' + Array.from(currentTags).map(t => '"' + t + '"').join(', ') + ']';
-    const frontMatter = '---\ntitle: "' + title + '"\ndate: ' + dateStr + '\ntags: ' + tagStr + '\n---\n\n';
+
+    if (!config) {
+      throw new Error('请先配置 GitHub 连接');
+    }
+
+    const branch = config.branch || 'main';
+
+    const dateStr = new Date()
+      .toISOString()
+      .split('T')[0];
+
+    const tagStr =
+      '[' +
+      Array.from(currentTags)
+        .map(t => `"${t}"`)
+        .join(', ') +
+      ']';
+
+    const frontMatter =
+`---
+title: "${title}"
+date: ${dateStr}
+tags: ${tagStr}
+---
+
+`;
+
     const fileContent = frontMatter + content;
-    const encoded = btoa(unescape(encodeURIComponent(fileContent)));
-    const filePath = GITHUB_POSTS_PATH + '/' + slug + '.md';
-    await githubFetch('/repos/' + config.owner + '/' + config.repo + '/contents/' + filePath, {
+
+    const encoded = btoa(
+      unescape(
+        encodeURIComponent(fileContent)
+      )
+    );
+
+    const filePath =
+      GITHUB_POSTS_PATH +
+      '/' +
+      slug +
+      '.md';
+
+    const apiPath =
+      '/repos/' +
+      config.owner +
+      '/' +
+      config.repo +
+      '/contents/' +
+      filePath;
+
+    let sha = currentEditingSha;
+
+    if (!sha) {
+      try {
+        const oldFile = await githubFetch(apiPath);
+        sha = oldFile.sha;
+      } catch (e) {
+        // 文件不存在，视为新建
+      }
+    }
+
+    const body = {
+      message: sha
+        ? `update: ${title}`
+        : `create: ${title}`,
+      content: encoded,
+      branch: branch
+    };
+
+    if (sha) {
+      body.sha = sha;
+    }
+
+    const result = await githubFetch(apiPath, {
       method: 'PUT',
-      body: JSON.stringify({ message: 'feat: 发布文章 "' + title + '"', content: encoded, branch: 'master' })
+      body: JSON.stringify(body)
     });
-    showAlert('✅ 文章已发布到 GitHub: ' + title, 'success');
+
+    currentEditingSha =
+      result.content &&
+      result.content.sha
+        ? result.content.sha
+        : sha;
+
+    showAlert(
+      '✅ 文章已发布到 GitHub: ' + title,
+      'success'
+    );
+
+    document.getElementById('slug-input').value = slug;
+
     loadPosts();
+
   } catch (err) {
-    showAlert('❌ 发布失败: ' + err.message, 'error');
+
+    showAlert(
+      '❌ 发布失败: ' + err.message,
+      'error'
+    );
+
   } finally {
+
     btn.disabled = false;
-    btn.textContent = '📤 发布文章';
+
+    btn.textContent =
+      currentEditingSha
+        ? '💾 保存更新'
+        : '📤 发布文章';
   }
 }
 
@@ -704,6 +815,7 @@ async function githubEditPost(slug) {
     if (!config) throw new Error('请先配置 GitHub 连接');
     const filePath = GITHUB_POSTS_PATH + '/' + slug + '.md';
     const data = await githubFetch('/repos/' + config.owner + '/' + config.repo + '/contents/' + filePath);
+    currentEditingSha = data.sha;
     const content = decodeURIComponent(escape(atob(data.content)));
     const match = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
     let meta = {}, body = content;
