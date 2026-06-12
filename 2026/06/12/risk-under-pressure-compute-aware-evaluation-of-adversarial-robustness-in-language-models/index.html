@@ -1,0 +1,202 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#0078E7"><meta name="author" content="南有乔木"><meta name="copyright" content="南有乔木"><meta name="generator" content="Hexo 7.3.0"><meta name="theme" content="hexo-theme-yun"><title>Risk Under Pressure: Compute-Aware Evaluation of Adversarial Robustness in Language Models | 上天一定会眷顾努力的孩子</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&amp;display=swap" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/star-markdown-css@0.4.1/dist/yun/yun-markdown.min.css"><link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/prism-theme-vars/base.css"><script src="https://fastly.jsdelivr.net/npm/scrollreveal/dist/scrollreveal.min.js" defer></script><script>function initScrollReveal() {
+  [".post-card",".markdown-body img"].forEach((target)=> {
+    ScrollReveal().reveal(target);
+  })
+}
+document.addEventListener("DOMContentLoaded", initScrollReveal);
+document.addEventListener("pjax:success", initScrollReveal);
+</script><link rel="icon" type="image/png" href="/%E5%8D%97_%E7%99%BD.png"><link rel="mask-icon" href="/%E5%8D%97_%E7%99%BD.png" color="#0078E7"><link rel="preload" href="/css/hexo-theme-yun.css" as="style"><link rel="prefetch" href="/js/sidebar.js" as="script"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="preconnect" href="https://fastly.jsdelivr.net/npm/" crossorigin><script id="yun-config">
+    window.Yun = {}
+    window.CONFIG = {"hostname":"example.com","root":"/","title":"南有乔木的小破站","version":"1.10.11","mode":"auto","copycode":true,"page":{"isPost":true},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}.","hits":"${hits} results found","hits_time":"${hits} results found in ${time} ms"},"anonymous_image":"https://cdn.yunyoujun.cn/img/avatar/none.jpg","say":{"api":"https://v1.hitokoto.cn","hitokoto":true},"fireworks":{"colors":["102, 167, 221","62, 131, 225","33, 78, 194","3, 28, 95","0, 8, 55"]},"vendors":{"host":"https://fastly.jsdelivr.net/npm/","darken":"https://fastly.jsdelivr.net/npm/darken@1.5.0"}};
+  </script><link rel="stylesheet" href="/css/hexo-theme-yun.css"><script src="/js/hexo-theme-yun.js" type="module"></script><link rel="alternate" href="/atom.xml" title="上天一定会眷顾努力的孩子" type="application/atom+xml"><meta name="description" content="Risk Under Pressure: Compute-Aware Evaluation of Adversarial Robustness in Language Models核心信息 论文ID：2606.11409 作者：Malikeh Ehghaghi, Boglárka Ecsedi, Marsha Chechik, Colin Raffel 机构：University of Toron">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Risk Under Pressure: Compute-Aware Evaluation of Adversarial Robustness in Language Models">
+<meta property="og:url" content="http://example.com/2026/06/12/risk-under-pressure-compute-aware-evaluation-of-adversarial-robustness-in-language-models/index.html">
+<meta property="og:site_name" content="上天一定会眷顾努力的孩子">
+<meta property="og:description" content="Risk Under Pressure: Compute-Aware Evaluation of Adversarial Robustness in Language Models核心信息 论文ID：2606.11409 作者：Malikeh Ehghaghi, Boglárka Ecsedi, Marsha Chechik, Colin Raffel 机构：University of Toron">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-06-12T00:00:00.000Z">
+<meta property="article:modified_time" content="2026-06-12T14:34:49.913Z">
+<meta property="article:author" content="南有乔木">
+<meta property="article:tag" content="AI安全">
+<meta name="twitter:card" content="summary"><script>(function() {
+  if (CONFIG.mode !== 'auto') return
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+  const setting = localStorage.getItem('darken-mode') || 'auto'
+  if (setting === 'dark' || (prefersDark && setting !== 'light'))
+    document.documentElement.classList.toggle('dark', true)
+})()</script></head><body><script src="https://code.iconify.design/2/2.1.1/iconify.min.js"></script><script>// Define global variable
+IconifyProviders = {
+  // Empty prefix: overwrite default API provider configuration
+  '': {
+    // Use custom API first, use Iconify public API as backup
+    resources: [
+        'https://api.iconify.design',
+    ],
+    // Wait for 1 second before switching API hosts
+    rotate: 1000,
+  },
+};</script><script defer src="https://fastly.jsdelivr.net/npm/animejs@latest"></script><script defer src="/js/ui/fireworks.js" type="module"></script><canvas class="fireworks"></canvas><div class="container"><a class="sidebar-toggle hty-icon-button" id="menu-btn"><div class="hamburger hamburger--spin" type="button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></div></a><div class="sidebar-toggle sidebar-overlay"></div><aside class="sidebar"><script src="/js/sidebar.js" type="module"></script><ul class="sidebar-nav"><li class="sidebar-nav-item sidebar-nav-toc hty-icon-button sidebar-nav-active" data-target="post-toc-wrap" title="Table of Contents"><span class="icon iconify" data-icon="ri:list-ordered"></span></li><li class="sidebar-nav-item sidebar-nav-overview hty-icon-button" data-target="site-overview-wrap" title="Overview"><span class="icon iconify" data-icon="ri:passport-line"></span></li></ul><div class="sidebar-panel" id="site-overview-wrap"><div class="site-info fix-top"><a class="site-author-avatar" href="/about/" title="南有乔木"><img width="96" loading="lazy" src="/avatar.jpg" alt="南有乔木"><span class="site-author-status" title="永远相信美好的事情即将发生">😊</span></a><div class="site-author-name"><a href="/about/">南有乔木</a></div><span class="site-name">上天一定会眷顾努力的孩子</span><sub class="site-subtitle"></sub><div class="site-description">平平淡淡，普普通通，生活美好</div></div><nav class="site-state"><a class="site-state-item hty-icon-button icon-home" href="/" title="Home"><span class="site-state-item-icon"><span class="icon iconify" data-icon="ri:home-4-line"></span></span></a><div class="site-state-item"><a href="/archives/" title="Archives"><span class="site-state-item-icon"><span class="icon iconify" data-icon="ri:archive-line"></span></span><span class="site-state-item-count">3</span></a></div><div class="site-state-item"><a href="/categories/" title="Categories"><span class="site-state-item-icon"><span class="icon iconify" data-icon="ri:folder-2-line"></span></span><span class="site-state-item-count">0</span></a></div><div class="site-state-item"><a href="/tags/" title="Tags"><span class="site-state-item-icon"><span class="icon iconify" data-icon="ri:price-tag-3-line"></span></span><span class="site-state-item-count">2</span></a></div><a class="site-state-item hty-icon-button" target="_blank" rel="noopener" href="https://yun.yunyoujun.cn" title="文档"><span class="site-state-item-icon"><span class="icon iconify" data-icon="ri:settings-line"></span></span></a></nav><hr style="margin-bottom:0.5rem"><div class="links-of-author"><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://github.com/mengling02/GUOke" title="GitHub" target="_blank" style="color:#6e5494"><span class="icon iconify" data-icon="ri:github-line"></span></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://music.163.com/#/user/home?id=547325865" title="网易云音乐" target="_blank" style="color:#C20C0C"><span class="icon iconify" data-icon="ri:netease-cloud-music-line"></span></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://space.bilibili.com/401797301?spm_id_from=333.1007.0.0" title="哔哩哔哩" target="_blank" style="color:#FF8EB3"><span class="icon iconify" data-icon="ri:bilibili-line"></span></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="1770043597@qq.com" title="E-Mail" target="_blank" style="color:#8E71C1"><span class="icon iconify" data-icon="ri:mail-line"></span></a></div><br><a class="links-item hty-icon-button" id="toggle-mode-btn" href="javascript:;" title="Mode" style="color: #f1cb64"><span class="icon iconify" data-icon="ri:contrast-2-line"></span></a></div><div class="sidebar-panel sidebar-panel-active" id="post-toc-wrap"><div class="post-toc"><div class="post-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Risk-Under-Pressure-Compute-Aware-Evaluation-of-Adversarial-Robustness-in-Language-Models"><span class="toc-number">1.</span> <span class="toc-text">Risk Under Pressure: Compute-Aware Evaluation of Adversarial Robustness in Language Models</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E4%BF%A1%E6%81%AF"><span class="toc-number">1.1.</span> <span class="toc-text">核心信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%91%98%E8%A6%81"><span class="toc-number">1.2.</span> <span class="toc-text">摘要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%91%98%E8%A6%81%E7%BF%BB%E8%AF%91"><span class="toc-number">1.3.</span> <span class="toc-text">摘要翻译</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A0%94%E7%A9%B6%E9%97%AE%E9%A2%98"><span class="toc-number">1.4.</span> <span class="toc-text">研究问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E6%A6%82%E8%BF%B0"><span class="toc-number">1.5.</span> <span class="toc-text">方法概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%96%B9%E6%B3%95"><span class="toc-number">1.5.1.</span> <span class="toc-text">核心方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F"><span class="toc-number">1.5.2.</span> <span class="toc-text">数学公式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E5%88%9B%E6%96%B0"><span class="toc-number">1.5.3.</span> <span class="toc-text">关键创新</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="toc-number">1.6.</span> <span class="toc-text">实验结果</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-number">1.6.1.</span> <span class="toc-text">数据集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E8%AE%BE%E7%BD%AE"><span class="toc-number">1.6.2.</span> <span class="toc-text">实验设置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E7%BB%93%E6%9E%9C"><span class="toc-number">1.6.3.</span> <span class="toc-text">主要结果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%B1%E5%BA%A6%E5%88%86%E6%9E%90"><span class="toc-number">1.7.</span> <span class="toc-text">深度分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A0%94%E7%A9%B6%E4%BB%B7%E5%80%BC"><span class="toc-number">1.7.1.</span> <span class="toc-text">研究价值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E5%8A%BF"><span class="toc-number">1.7.2.</span> <span class="toc-text">优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%80%E9%99%90%E6%80%A7"><span class="toc-number">1.7.3.</span> <span class="toc-text">局限性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.7.4.</span> <span class="toc-text">适用场景</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8E%E7%9B%B8%E5%85%B3%E8%AE%BA%E6%96%87%E5%AF%B9%E6%AF%94"><span class="toc-number">1.8.</span> <span class="toc-text">与相关论文对比</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#RobustRAG-%E9%9D%99%E6%80%81%E7%9F%A5%E8%AF%86%E5%BA%93%E9%98%B2%E5%BE%A1"><span class="toc-number">1.8.1.</span> <span class="toc-text">[[RobustRAG]] - 静态知识库防御</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AutoAttack-%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E5%9F%BA%E5%87%86"><span class="toc-number">1.8.2.</span> <span class="toc-text">[[AutoAttack]] - 对抗攻击基准</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JailbreakBench-%E8%B6%8A%E7%8B%B1%E5%9F%BA%E5%87%86"><span class="toc-number">1.8.3.</span> <span class="toc-text">[[JailbreakBench]] - 越狱基准</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%80%E6%9C%AF%E8%B7%AF%E7%BA%BF%E5%AE%9A%E4%BD%8D"><span class="toc-number">1.9.</span> <span class="toc-text">技术路线定位</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AA%E6%9D%A5%E5%B7%A5%E4%BD%9C%E5%BB%BA%E8%AE%AE"><span class="toc-number">1.10.</span> <span class="toc-text">未来工作建议</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E7%9A%84%E7%BB%BC%E5%90%88%E8%AF%84%E4%BB%B7"><span class="toc-number">1.11.</span> <span class="toc-text">我的综合评价</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%B7%E5%80%BC%E8%AF%84%E5%88%86"><span class="toc-number">1.11.1.</span> <span class="toc-text">价值评分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AA%81%E5%87%BA%E4%BA%AE%E7%82%B9"><span class="toc-number">1.11.2.</span> <span class="toc-text">突出亮点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E5%85%B3%E6%B3%A8"><span class="toc-number">1.11.3.</span> <span class="toc-text">重点关注</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E5%80%9F%E9%89%B4%E7%82%B9"><span class="toc-number">1.11.4.</span> <span class="toc-text">可借鉴点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%B9%E5%88%A4%E6%80%A7%E6%80%9D%E8%80%83"><span class="toc-number">1.11.5.</span> <span class="toc-text">批判性思考</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E7%9A%84%E7%AC%94%E8%AE%B0"><span class="toc-number">1.12.</span> <span class="toc-text">我的笔记</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E8%AE%BA%E6%96%87"><span class="toc-number">1.13.</span> <span class="toc-text">相关论文</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%96%E9%83%A8%E8%B5%84%E6%BA%90"><span class="toc-number">1.14.</span> <span class="toc-text">外部资源</span></a></li></ol></li></ol></div></div></div><div class="tag-cloud"><div class="tag-cloud-tags"><a href="/tags/AI%E5%AE%89%E5%85%A8/" style="font-size: 30px; color: #0078e7">AI安全</a> <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" style="font-size: 12px; color: #999">深度学习</a></div></div></aside><main class="sidebar-translate" id="content"><div id="post"><article class="hty-card post-block" itemscope itemtype="https://schema.org/Article" style="--smc-primary:#0078E7;"><link itemprop="mainEntityOfPage" href="http://example.com/2026/06/12/risk-under-pressure-compute-aware-evaluation-of-adversarial-robustness-in-language-models/"><span hidden itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="南有乔木"><meta itemprop="description"></span><span hidden itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="上天一定会眷顾努力的孩子"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">Risk Under Pressure: Compute-Aware Evaluation of Adversarial Robustness in Language Models</h1><div class="post-meta"><div class="post-time"><span class="post-meta-item-icon"><span class="icon iconify" data-icon="ri:calendar-line"></span></span> <time title="Created: 2026-06-12 00:00:00" itemprop="dateCreated datePublished" datetime="2026-06-12T00:00:00+00:00">2026-06-12</time></div><div class="post-classify"><span class="post-tag"><a class="tag-item" href="/tags/AI%E5%AE%89%E5%85%A8/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><span class="icon iconify" data-icon="ri:price-tag-3-line"></span></span><span class="tag-name">AI安全</span></a></span></div></div></header><section class="post-body" itemprop="articleBody"><div class="post-content markdown-body"><h1 id="Risk-Under-Pressure-Compute-Aware-Evaluation-of-Adversarial-Robustness-in-Language-Models"><a href="#Risk-Under-Pressure-Compute-Aware-Evaluation-of-Adversarial-Robustness-in-Language-Models" class="headerlink" title="Risk Under Pressure: Compute-Aware Evaluation of Adversarial Robustness in Language Models"></a>Risk Under Pressure: Compute-Aware Evaluation of Adversarial Robustness in Language Models</h1><h2 id="核心信息"><a href="#核心信息" class="headerlink" title="核心信息"></a>核心信息</h2><ul>
+<li><strong>论文ID</strong>：2606.11409</li>
+<li><strong>作者</strong>：Malikeh Ehghaghi, Boglárka Ecsedi, Marsha Chechik, Colin Raffel</li>
+<li><strong>机构</strong>：University of Toronto &#x2F; Google DeepMind（从作者推断）</li>
+<li><strong>发布时间</strong>：2026-06-09</li>
+<li><strong>会议&#x2F;期刊</strong>：预印本 (cs.LG, cs.AI, cs.CR)</li>
+<li><strong>链接</strong>：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2606.11409">论文</a> | <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2606.11409v1">PDF</a></li>
+<li><strong>DOI</strong>：10.48550&#x2F;arXiv.2606.11409</li>
+</ul>
+<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>Adversarial robustness evaluations of large language models (LLMs) typically report attack success rate (ASR) under fixed query budgets, implicitly treating all attacks as equally costly. We propose a [[Obsidian&#x2F;Papers&#x2F;AI安全&#x2F;2026-06-12&#x2F;Risk_Under_Pressure_Compute-Aware_Evaluation_of_Adversarial_Robustness_in_Language_Models.md|compute-aware]] evaluation framework based on computational pressure, measured in cumulative FLOPs. We introduce risk-compute curves mapping compute budgets to attack risk. Across ten models spanning three families, we find alignment training has non-monotonic effects on compute-space robustness, scaling model size reduces gradient-based attack effectiveness, and safety-aligned RL increases aggregate cost while leaving some categories disproportionately accessible.</p>
+<h2 id="摘要翻译"><a href="#摘要翻译" class="headerlink" title="摘要翻译"></a>摘要翻译</h2><p>对大语言模型（LLM）的对抗鲁棒性评估通常在固定查询预算下报告攻击成功率（ASR），隐含地将所有攻击视为等代价的。实际上，不同攻击策略的计算开销可能相差数个数量级。因此，固定预算下的 ASR 可能掩盖越狱模型所需的真实努力。本文提出基于”计算压力”（以累积浮点运算 FLOPs 衡量）的计算感知评估框架，作为对抗努力的代理指标。引入风险-计算曲线，将计算预算映射到攻击风险，并推导两个度量指标。在三个模型家族的十个模型、四种训练&#x2F;对齐阶段上，使用三种攻击策略（梯度型、迭代精炼型、模板型）评估两个越狱鲁棒性基准。</p>
+<h2 id="研究问题"><a href="#研究问题" class="headerlink" title="研究问题"></a>研究问题</h2><p>传统的 LLM 安全评估以固定查询预算下的 ASR 为核心指标，忽略了不同攻击策略在计算代价上的巨大差异。这导致无法准确判断攻击成本是否值得其收益。本文提出：<strong>如何以计算代价为维度，重新衡量 LLM 的对抗鲁棒性？</strong></p>
+<h2 id="方法概述"><a href="#方法概述" class="headerlink" title="方法概述"></a>方法概述</h2><h3 id="核心方法"><a href="#核心方法" class="headerlink" title="核心方法"></a>核心方法</h3><ol>
+<li><p><strong>计算感知评估框架</strong></p>
+<ul>
+<li>以累积 FLOPs 作为”计算压力”的度量</li>
+<li>将攻击视为在计算预算约束下的优化问题</li>
+<li>不同攻击策略的计算代价可差数个数量级</li>
+</ul>
+</li>
+<li><p><strong>风险-计算曲线（Risk-Compute Curves）</strong></p>
+<ul>
+<li>横轴：计算预算（FLOPs）</li>
+<li>纵轴：攻击风险（ASR）</li>
+<li>将鲁棒性从”单点指标”升级为”连续曲线”</li>
+</ul>
+</li>
+<li><p><strong>两个汇总指标</strong></p>
+<ul>
+<li>平均计算压力（Average Compute Pressure）：攻击成功所需的平均计算量</li>
+<li>可在给定计算预算下比较不同模型的真实安全水平</li>
+</ul>
+</li>
+</ol>
+<h3 id="数学公式"><a href="#数学公式" class="headerlink" title="数学公式"></a>数学公式</h3><ul>
+<li>攻击成功率随计算预算 $\mathcal{C}$ 变化：$R(\mathcal{C}) &#x3D; \text{ASR}(\mathcal{C})$</li>
+<li>风险-计算曲线下的面积可作为综合鲁棒性度量</li>
+</ul>
+<h3 id="关键创新"><a href="#关键创新" class="headerlink" title="关键创新"></a>关键创新</h3><ol>
+<li><strong>计算感知范式</strong> - 首次将 FLOPs 作为 LLM 对抗评估的核心维度，超越固定预算 ASR</li>
+<li><strong>风险-计算曲线</strong> - 提供比单一 ASR 值更丰富的鲁棒性画像</li>
+<li><strong>跨维度评估</strong> - 覆盖模型家族、训练阶段、攻击类型、危害类别四个维度</li>
+</ol>
+<h2 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h2><h3 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h3><ul>
+<li><strong>越狱基准</strong>：2 个越狱鲁棒性基准（具体名称见原文）</li>
+<li><strong>模型</strong>：10 个模型，跨 3 个模型家族，4 个训练&#x2F;对齐阶段</li>
+</ul>
+<h3 id="实验设置"><a href="#实验设置" class="headerlink" title="实验设置"></a>实验设置</h3><ul>
+<li><strong>攻击策略</strong>：梯度型、迭代精炼型、模板型</li>
+<li><strong>评估指标</strong>：ASR、风险-计算曲线、平均计算压力</li>
+</ul>
+<h3 id="主要结果"><a href="#主要结果" class="headerlink" title="主要结果"></a>主要结果</h3><ol>
+<li><strong>对齐训练的效果非单调</strong> - 安全对齐不一定线性提升计算空间鲁棒性</li>
+<li><strong>模型规模效应不均匀</strong> - 增大模型规模降低梯度型攻击有效性，但对廉价模板型攻击影响有限</li>
+<li><strong>攻击可迁移</strong> - 梯度型攻击在代理模型优化后可迁移至目标模型，降低攻击者成本</li>
+<li><strong>危害类别间差异高达 ~5×</strong> - 同一模型内不同危害类别的计算代价差异显著</li>
+<li><strong>安全 RL 的双面性</strong> - 整体增加攻击成本，但部分类别仍可被低成本攻击</li>
+</ol>
+<h2 id="深度分析"><a href="#深度分析" class="headerlink" title="深度分析"></a>深度分析</h2><h3 id="研究价值"><a href="#研究价值" class="headerlink" title="研究价值"></a>研究价值</h3><ul>
+<li><strong>理论贡献</strong>：将对抗鲁棒性从”二值判断”（成功&#x2F;失败）升级为”连续谱”，为安全评估提供更精细的工具</li>
+<li><strong>实际应用</strong>：为 LLM 部署者提供按危害类别和计算预算的风险画像，指导防御资源分配</li>
+<li><strong>领域影响</strong>：可能改变 LLM 安全评估的标准范式，推动计算感知评估成为新基准</li>
+</ul>
+<h3 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h3><ul>
+<li>评估维度更全面，不再被单一 ASR 数字误导</li>
+<li>跨模型、跨攻击、跨危害类别的系统比较</li>
+<li>开源框架，可复现和扩展</li>
+</ul>
+<h3 id="局限性"><a href="#局限性" class="headerlink" title="局限性"></a>局限性</h3><ul>
+<li>FLOPs 估算可能不完全精确，尤其是对闭源 API 模型</li>
+<li>未考虑攻击者的经济成本（硬件、时间等），仅关注计算量</li>
+<li>依赖特定越狱基准，对其他威胁模型（如数据提取）的推广性待验证</li>
+</ul>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h3><ul>
+<li>LLM 安全部署前的风险评估</li>
+<li>不同防御策略的成本效益分析</li>
+<li>安全对齐训练的效果评估</li>
+</ul>
+<h2 id="与相关论文对比"><a href="#与相关论文对比" class="headerlink" title="与相关论文对比"></a>与相关论文对比</h2><h3 id="RobustRAG-静态知识库防御"><a href="#RobustRAG-静态知识库防御" class="headerlink" title="[[RobustRAG]] - 静态知识库防御"></a>[[RobustRAG]] - 静态知识库防御</h3><ul>
+<li><strong>差异</strong>：本文关注评估方法论，RobustRAG 关注具体防御</li>
+<li><strong>互补</strong>：本文框架可用于评估 RobustRAG 等防御的计算感知鲁棒性</li>
+</ul>
+<h3 id="AutoAttack-对抗攻击基准"><a href="#AutoAttack-对抗攻击基准" class="headerlink" title="[[AutoAttack]] - 对抗攻击基准"></a>[[AutoAttack]] - 对抗攻击基准</h3><ul>
+<li><strong>差异</strong>：AutoAttack 面向视觉模型，本文面向 LLM</li>
+<li><strong>改进</strong>：引入计算感知维度，更贴近实际攻击场景</li>
+</ul>
+<h3 id="JailbreakBench-越狱基准"><a href="#JailbreakBench-越狱基准" class="headerlink" title="[[JailbreakBench]] - 越狱基准"></a>[[JailbreakBench]] - 越狱基准</h3><ul>
+<li><strong>差异</strong>：JailbreakBench 使用固定查询预算，本文引入计算预算维度</li>
+<li><strong>改进</strong>：风险-计算曲线提供更细粒度的安全画像</li>
+</ul>
+<h2 id="技术路线定位"><a href="#技术路线定位" class="headerlink" title="技术路线定位"></a>技术路线定位</h2><p>本文属于 <strong>LLM 安全评估</strong> 技术路线，主要关注 <strong>计算感知的对抗鲁棒性评估</strong> 子方向，是安全评估方法论的创新。</p>
+<h2 id="未来工作建议"><a href="#未来工作建议" class="headerlink" title="未来工作建议"></a>未来工作建议</h2><ol>
+<li>将 FLOPs 扩展为更全面的经济代价模型（包含 API 调用费用、时间等）</li>
+<li>在更多威胁模型上验证（数据提取、提示注入等）</li>
+<li>开发基于风险-计算曲线的自动化防御策略选择工具</li>
+<li>对闭源 API 模型探索替代计算代价估算方法</li>
+</ol>
+<h2 id="我的综合评价"><a href="#我的综合评价" class="headerlink" title="我的综合评价"></a>我的综合评价</h2><h3 id="价值评分"><a href="#价值评分" class="headerlink" title="价值评分"></a>价值评分</h3><ul>
+<li><strong>总体评分</strong>：9.0&#x2F;10</li>
+<li><strong>分项评分</strong>：<ul>
+<li>创新性：9&#x2F;10</li>
+<li>技术质量：9&#x2F;10</li>
+<li>实验充分性：8&#x2F;10</li>
+<li>写作质量：9&#x2F;10</li>
+<li>实用性：9&#x2F;10</li>
+</ul>
+</li>
+</ul>
+<h3 id="突出亮点"><a href="#突出亮点" class="headerlink" title="突出亮点"></a>突出亮点</h3><ul>
+<li>首次系统性地将计算代价维度引入 LLM 对抗评估</li>
+<li>发现安全 RL 对齐的”非单调”效应，打破”越大越安全”的迷思</li>
+<li>风险-计算曲线概念简洁优雅，实用性强</li>
+</ul>
+<h3 id="重点关注"><a href="#重点关注" class="headerlink" title="重点关注"></a>重点关注</h3><ul>
+<li>模板型攻击的低成本高成功率，说明当前对齐方法存在结构性弱点</li>
+<li>危害类别间 ~5× 的计算代价差异，暗示防御不均匀</li>
+</ul>
+<h3 id="可借鉴点"><a href="#可借鉴点" class="headerlink" title="可借鉴点"></a>可借鉴点</h3><ul>
+<li>风险-计算曲线的评估范式可推广到其他安全评估场景</li>
+<li>FLOPs 作为计算压力的度量方法</li>
+<li>多维度（模型×攻击×类别）评估框架设计</li>
+</ul>
+<h3 id="批判性思考"><a href="#批判性思考" class="headerlink" title="批判性思考"></a>批判性思考</h3><ul>
+<li>FLOPs 能否真正反映攻击者面临的约束？对 API 模型而言查询次数可能更有意义</li>
+<li>“计算感知”框架是否会被攻击者利用来优化攻击效率？</li>
+</ul>
+<h2 id="我的笔记"><a href="#我的笔记" class="headerlink" title="我的笔记"></a>我的笔记</h2><p>[用户阅读后手动补充的内容]</p>
+<h2 id="相关论文"><a href="#相关论文" class="headerlink" title="相关论文"></a>相关论文</h2><ul>
+<li>[[RobustRAG]] - 静态知识库防御</li>
+<li>[[AutoAttack]] - 对抗攻击基准</li>
+<li>[[JailbreakBench]] - 越狱基准</li>
+</ul>
+<h2 id="外部资源"><a href="#外部资源" class="headerlink" title="外部资源"></a>外部资源</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2606.11409">论文链接</a></li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2606.11409v1">PDF</a></li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/html/2606.11409v1">HTML</a></li>
+</ul>
+</div></section><ul class="post-copyright"><li class="post-copyright-author"><strong>Post author: </strong>南有乔木</li><li class="post-copyright-link"><strong>Post link: </strong><a href="http://example.com/2026/06/12/risk-under-pressure-compute-aware-evaluation-of-adversarial-robustness-in-language-models/" title="Risk Under Pressure: Compute-Aware Evaluation of Adversarial Robustness in Language Models">http://example.com/2026/06/12/risk-under-pressure-compute-aware-evaluation-of-adversarial-robustness-in-language-models/</a></li><li class="post-copyright-license"><strong>Copyright Notice: </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener" title="CC BY-NC-SA 4.0 "><span class="icon iconify" data-icon="ri:creative-commons-line"></span><span class="icon iconify" data-icon="ri:creative-commons-by-line"></span><span class="icon iconify" data-icon="ri:creative-commons-nc-line"></span><span class="icon iconify" data-icon="ri:creative-commons-sa-line"></span></a> unless otherwise stated.</li></ul></article><div class="post-nav"><div class="post-nav-item"><a class="post-nav-prev" href="/2026/06/12/policyguard-towards-test-time-and-step-level-adversary-defense-for-reinforcement-learning-agent/" rel="prev" title="PolicyGuard: Towards Test-time and Step-level Adversary Defense for Reinforcement Learning Agent"><span class="icon iconify" data-icon="ri:arrow-left-s-line"></span><span class="post-nav-text">PolicyGuard: Towards Test-time and Step-level Adversary Defense for Reinforcement Learning Agent</span></a></div><div class="post-nav-item"><a class="post-nav-next" href="/2026/06/12/%E5%9F%BA%E4%BA%8E-u-net-%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%A7%86%E7%BD%91%E8%86%9C%E8%A1%80%E7%AE%A1%E5%9B%BE%E5%83%8F%E5%88%86%E5%89%B2%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6/" rel="next" title="基于 U-Net 模型的视网膜血管图像分割方法研究"><span class="post-nav-text">基于 U-Net 模型的视网膜血管图像分割方法研究</span><span class="icon iconify" data-icon="ri:arrow-right-s-line"></span></a></div></div></div><div class="hty-card" id="comment"></div></main><footer class="sidebar-translate" id="footer"><div class="copyright"><span>&copy; 2025 – 2026 </span><span class="with-love" id="animate"><span class="icon iconify" data-icon="ri:cloud-line"></span></span><span class="author"> 南有乔木</span></div><div class="powered"><span>Powered by <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> v7.3.0</span><span class="footer-separator">|</span><span>Theme - <a rel="noopener" href="https://github.com/YunYouJun/hexo-theme-yun" target="_blank"><span>Yun</span></a> v1.10.11</span></div><div class="live-time"><span>本博客运行时长</span><span id="display_live_time"></span><span class="moe-text">(●'◡'●)</span><script>function blog_live_time() {
+  setTimeout(blog_live_time, 1000);
+  const start = new Date('2024-12-22T00:00:00');
+  const now = new Date();
+  const timeDiff = (now.getTime() - start.getTime());
+  const msPerMinute = 60 * 1000;
+  const msPerHour = 60 * msPerMinute;
+  const msPerDay = 24 * msPerHour;
+  const passDay = Math.floor(timeDiff / msPerDay);
+  const passHour = Math.floor((timeDiff % msPerDay) / 60 / 60 / 1000);
+  const passMinute = Math.floor((timeDiff % msPerHour) / 60 / 1000);
+  const passSecond = Math.floor((timeDiff % msPerMinute) / 1000);
+  display_live_time.innerHTML = ` ${passDay} Days ${passHour} Hours ${passMinute} Minutes ${passSecond} Seconds`;
+}
+blog_live_time();
+</script></div></footer></div><a class="hty-icon-button" id="back-to-top" aria-label="back-to-top" href="#"><span class="icon iconify" data-icon="ri:arrow-up-s-line"></span><svg class="progress-circle-container" viewBox="0 0 100 100"><circle class="progress-circle" id="progressCircle" cx="50" cy="50" r="48" fill="none" stroke="#0078E7" stroke-width="2" stroke-linecap="round"></circle></svg></a><script>function initMourn() {
+  const date = new Date();
+  const today = (date.getMonth() + 1) + "-" + date.getDate()
+  const mourn_days = ["4-4","9-18"]
+  if (mourn_days.includes(today)) {
+    document.documentElement.style.filter = "grayscale(1)";
+  }
+}
+initMourn();</script><script src="https://fastly.jsdelivr.net/npm/medium-zoom@1.0.6/dist/medium-zoom.min.js"></script><script>const images = [...document.querySelectorAll('.markdown-body img')]
+mediumZoom(images)</script><style>.medium-zoom-image {
+  z-index: 99;
+}</style></body></html>
